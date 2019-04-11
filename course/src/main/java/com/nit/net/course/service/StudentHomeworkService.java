@@ -138,7 +138,7 @@ public class StudentHomeworkService {
 		//判断上传的文件格式
 		String lastName = homeworkName.substring(homeworkName.lastIndexOf(".")+1);
 		if (!"jpg".equals(lastName) || !"jpeg".equals(lastName) || !"png".equals(lastName) || !"pdf".equals(lastName)) {
-			throw new FileFormatErrorException("请上传图片格式(.jpg/.jpeg/.png/pdf)!");
+			throw new FileFormatErrorException("请上传正确的图片格式(.jpg/.jpeg/.png/.pdf)!");
 		}
 		//获取课程名和作业知识点
 		List<Map<String, String>> list = teacherHomeworkMapper.findCourseNameByTHId(thId);
