@@ -26,7 +26,7 @@ public class AdministratorController extends BaseController {
 	@RequestMapping(value="/reg.do",method=RequestMethod.POST)
 	public ResponseResult<Void> reg(Administrator administrator){
 		//进行注册
-		service.reg(administrator); 
+		service.reg(administrator);
 		return new ResponseResult<Void>();
 	}
 	
