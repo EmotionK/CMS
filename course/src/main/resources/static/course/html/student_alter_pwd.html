@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>修改密码</title>
+		<link rel="stylesheet" href="../css/administrator.css" />
+		<link rel="stylesheet" href="../css/teacher_reg.css" />
+		<script type="text/javascript" src="../js/jquery-1.4.2.js" ></script>
+	</head>
+	<body>
+		<div id="welcome">欢迎您：<a id="hello"></a></div>
+		<div id="navigation">
+			<div id="teacher_manage">修改密码</div>
+		</div>
+		<div id="function">
+			<form>
+				<span>账号：</span><input id="username" type="text" disabled="disabled" /><br />
+				<span>旧密码：</span><input id="old_password" name="old_password" type="password" placeholder="请输入旧密码" /><div id="old_password_error"></div><br />
+				<span>新密码：</span><input id="new_password_1" name="new_password" type="password" placeholder="请输入新密码" /><div id="new_password_1_error"></div><br />
+				<span>再次输入新密码：</span><input id="new_password_2" type="password" placeholder="请再次输入新密码" /><div id="new_password_2_error"></div><br />
+				<input id="update-btn" type="button" value="修改密码" />
+			</form>
+		</div>
+	</body>
+	<style type="text/css">
+		#new_password_1_error{
+			color: red;
+			font-size: 17px;
+			font-family: "楷体";
+			position: absolute;
+			margin: -32px 0 0 690px;
+		}
+		#new_password_2_error{
+			color: red;
+			font-size: 17px;
+			font-family: "楷体";
+			position: absolute;
+			margin: -32px 0 0 690px;
+		}
+		#old_password_error{
+			color: red;
+			font-size: 17px;
+			font-family: "楷体";
+			position: absolute;
+			margin: -32px 0 0 690px;
+		}
+	</style>
+	<script type="text/javascript">
+		$("#new_password_1").blur(function(){
+			var old_password = $("#old_password").val();
+			var new_password_1 = $("#new_password_1").val();
+			if(old_password==new_password_1){
+				$("#new_password_1_error").html("旧密码与新密码相同");
+			}else{
+				$("#new_password_1_error").html("");
+			}
+		});
+		$("#new_password_2").blur(function(){
+			var new_password_1 = $("#new_password_1").val();
+			var new_password_2 = $("#new_password_2").val();
+			if(new_password_1!=new_password_2){
+				$("#new_password_2_error").html("两次新密码不一致");
+			}else{
+				$("#new_password_2_error").html("");
+			}
+		});
+		
+		
+		var id = location.search.substr(location.search.indexOf("=")+1);
+		
+		$(document).ready(function(){
+			
+			var url= "/student/getName.do";
+			$.ajax({
+				"url":url,
+				"type":"get",
+				"dataType":"json",
+				"success":function(json){
+					if(json.state==200){
+						var data = json.data;
+						$("#hello").html(data[1]);
+					}
+				}
+			});
+			
+			showTeacherPwd();
+			
+		});
+		
+		function showTeacherPwd(){
+			var url = "/student/findById.do";
+			var data = "id="+id;
+			$.ajax({
+				"url":url,
+				"data":data,
+				"type":"get",
+				"dataType":"json",
+				"success":function(json){
+					var data = json.data;
+					if(json.state==200){
+						$("#username").val(data.username);
+					}else if(json.state==-6){
+						alert(json.message);
+					}
+				}
+			});
+		}
+		
+		$("#update-btn").click(function(){
+			var url = "/student/updatePwd.do";
+			var data = "id="+id +"&old_password="+ $("#old_password").val() +"&new_password="+ $("#new_password_1").val();
+			$.ajax({
+				"url":url,
+				"data":data,
+				"type":"post",
+				"dataType":"json",
+				"success":function(json){
+					if(json.state==200){
+						alert("修改成功!")
+						location.href = "stu.html";
+					}else if(json.state==-6){
+						alert(json.message);
+					}else if(json.state==-5){
+						$("#old_password_error").html(json.message);
+					}
+				}
+			});
+		});
+		
+		
+	</script>
+	
+	
+</html>

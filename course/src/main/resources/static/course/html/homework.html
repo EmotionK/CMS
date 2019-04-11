@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>作业管理</title>
+		<link rel="stylesheet" href="../css/administrator.css" />
+	</head>
+	<body>
+		<div id="welcome">欢迎您：<a href="teacher_message.html">杨劲秋老师</a></div>
+		<div id="navigation">
+			<div id="teacher_manage"><a href="teacher.html">课程管理</a></div>
+			<div id="teacher_manage"><a href="student.html">学生管理</a></div>
+			<div id="teacher_manage"><a href="#">作业管理</a></div>
+			<div id="teacher_manage"><a href="score.html">成绩管理</a></div>
+		</div>
+		<div id="function">
+			<form id="query">
+				<input type="button" value="查询" />
+				<input type="text" placeholder="请输入课程名或知识点或学生姓名" />
+			</form>
+			<table border="1" id="table">
+				<tr>
+					<td>课程名</td>
+					<td>布置时间</td>
+					<td>知识点</td>
+					<td>及格学生数</td>
+				</tr>
+				<tr>
+					<td>数据结构</td>
+					<td>2018-01-08</td>
+					<td>二叉树</td>
+					<td>99</td>
+				</tr>
+			</table>
+			<div id="paging">
+				<a href="#">上一页</a>
+				<a href="#">下一页</a>
+			</div>
+		</div>
+	</body>
+</html>

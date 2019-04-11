@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>管理员注册</title>
+		<link rel="stylesheet" href="../css/administrator.css" />
+		<link rel="stylesheet" href="../css/teacher_reg.css" />
+		<script type="text/javascript" src="../js/jquery-1.4.2.js" ></script>
+	</head>
+	<body>
+		<div id="welcome">欢迎您</div>
+		<div id="navigation">
+			<div id="teacher_manage">管理员注册</div>
+		</div>
+		<div id="function">
+			<form id="reg-form">
+				<span>账号：</span><input name="username" id="username" type="text" placeholder="请输入账号" /><div id="username_error"></div><br />
+				<span>密码：</span><input name="password" id="password" type="password" placeholder="请输入密码" /><br />
+				<span>再次输入密码：</span><input id="new_password" type="password" placeholder="请再次输入密码" /><div id="password_error"></div><br />
+				<span>密钥：</span><input name="secretKey" type="password" placeholder="请输入密钥" /><br />
+				<input id="reg-btn" type="button" value="注册" />
+			</form>
+		</div>
+	</body>
+	
+	<script type="text/javascript">
+		$("#new_password").blur(function(){
+			var old_password = $("#password").val();
+			var new_password = $("#new_password").val();
+			if(old_password!=new_password){
+				$("#password_error").html("两次密码不一致");
+			}else{
+				$("#password_error").html("");
+			}
+		});
+		$("#username").blur(function(){
+			var username = $("#username").val();
+			var reg = /^\d{6,12}$/;
+			if(!reg.test(username)){
+				$("#username_error").html("请输入6-12位数字");
+			}else{
+				$("#username_error").html("");
+			}
+		});
+		
+		
+		
+		$("#reg-btn").click(function(){
+			var url = "/administrator/reg.do";
+			var data = $("#reg-form").serialize();
+			$.ajax({
+				"url":url,
+				"data":data,
+				"type":"post",
+				"dataType":"json",
+				"success":function(json){
+					if(json.state==200){
+						alert("注册成功！");
+						location.href = "administrator.html";
+					}else if(json.state==-1){
+						alert(json.message);
+					}else if(json.state==-2){
+						alert(json.message);
+					}else if(json.state==-3){
+						alert(json.message);
+					}
+				}
+			});
+		});
+		
+	</script>
+	
+</html>

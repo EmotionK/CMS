@@ -1,0 +1,79 @@
+body{
+	background-color:	#778899;
+}
+
+#welcome{
+	font-family: "楷体";
+	float: right;
+	font-size: 20px;
+	margin:20px 30px;
+	overflow: hidden;
+	clear: both;
+}
+
+#welcome>a{
+	text-decoration: none;
+}
+
+#navigation{
+	margin:65px 50px;
+	width: 15%;
+	height: 550px;
+	background-color:	#A9A9A9;
+	float: left;
+}
+
+#function{
+	float: left;
+	width: 70%;
+	height: 550px;
+	background-color:	#A9A9A9;
+}
+
+#teacher_manage{
+	font-family: "楷体";
+	font-size: 25px;
+	margin:20px 35px ;
+}
+
+#teacher_manage>a{
+	text-decoration: none;
+}
+
+#register{
+	float: left;
+	margin: 20px 40px;
+	font-family: "楷体";
+	font-size: 20px;
+}
+
+#query input[type="button"]{
+	width: 50px;
+	height: 30px;
+	font-family: "楷体";
+	font-size: 20px;
+	float: right;
+	margin: 20px 20px 0 0;
+}
+
+#query input[type="text"]{
+	width: 180px;
+	height: 24px;
+	float: right;
+	margin-top: 20px;
+	margin-bottom: 15px;
+}
+
+#table{
+	width: 90%;
+	margin:20px auto;
+	font-size: 18px;
+	font-family: "楷体";
+	text-align: center;
+	clear: both;
+}
+
+#paging{
+	float: right;
+	margin-right: 100px;
+}

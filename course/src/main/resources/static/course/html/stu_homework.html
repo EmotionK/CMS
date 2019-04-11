@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>作业</title>
+		<link rel="stylesheet" href="../css/administrator.css" />
+		<script type="text/javascript" src="../js/jquery-1.4.2.js" ></script>
+	</head>
+	<body>
+		<div id="welcome">欢迎您：<a id="hello"></a></div>
+		<div id="navigation">
+			<div id="teacher_manage"><a href="#">作业管理</a></div>
+		</div>
+		<div id="function">
+			<form id="query">
+			</form>
+			<table border="1" id="table">
+				<tr>
+					<td>发布时间</td>
+					<td>知识点</td>
+					<td>备注</td>
+				</tr>
+				<tbody id="table-list">
+					<tr>
+						<td>2019-05-09</td>
+						<td>二叉树</td>
+						<td>
+							<a href="stu_homework_content.html">作业内容</a>
+							<a href="student_uploadHomework.html">上传作业</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<div id="paging">
+				<a href="#">上一页</a>
+				<a href="#">下一页</a>
+			</div>
+		</div>
+	</body>
+	
+	<script type="text/javascript">
+		
+		/*课程id*/
+		var id = location.search.substr(location.search.indexOf("=")+1);
+		
+		/*获取学生信息*/
+		$(document).ready(function(){
+			
+			var url= "/student/getName.do";
+			$.ajax({
+				"url":url,
+				"type":"get",
+				"dataType":"json",
+				"success":function(json){
+					if(json.state==200){
+						var data = json.data;
+						$("#hello").attr("href","student_message.html?id="+data[0]);
+						$("#hello").html(data[1]);
+					}
+				}
+			});
+			
+			showHomework();
+			
+		});
+		
+		
+		function showHomework(){
+			var url = "/StudentHomework/findHomeworkByCid.do";
+			var data = "cId=" + id;
+			$.ajax({
+			    "url":url,
+			    "data":data,
+			    "type":"get",
+			    "dataType":"json",
+			    "success":function(json){
+			        if(json.state==200){
+			            var data = json.data;
+			            $("#table-list").empty();
+			            for (var i=0;i<data.length;i++) {
+			            	var html = '<tr>'
+									+'<td>#{uploadDate}</td>'
+									+'<td>#{knowledge}</td>'
+									+'<td>'
+									+'	<a href="/StudentHomework/downloadHomework.do?homeworkContent=#{homeworkContent}">作业下载</a>'
+									+'	<a href="student_uploadHomework.html?id=#{id}">上传作业</a>'
+									+'</td>'
+									+'</tr>';
+							html = html.replace("#{id}",data[i].id);
+							html = html.replace("#{uploadDate}",data[i].uploadDate);
+							html = html.replace("#{knowledge}",data[i].knowledge);
+							html = html.replace("#{homeworkContent}",data[i].homeworkContent);
+							$("#table-list").append(html);
+			            }
+			        }
+			    }
+			});
+		}
+		
+		
+		
+	</script>
+	
+	
+</html>

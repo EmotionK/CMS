@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" >
+		<title>作业布置</title>
+		<link rel="stylesheet" href="../css/administrator.css" />
+		<link rel="stylesheet" href="../css/teacher_reg.css" />
+		<script type="text/javascript" src="../js/jquery.js" ></script>	
+	</head>
+	<body>
+		<div id="welcome">欢迎您：<a id="hello"></a></div>
+		<div id="navigation">
+			<div id="teacher_manage">作业上传</div>
+		</div>
+		<div id="function">
+				<form enctype="multipart/form-data" id="upload-form">
+					<span>上传作业：</span><input name="uploadHomework" type="file" value="选择文件" />
+					<input id="upload-btn" type="button" value="上传作业" />
+				</form>
+		</div>
+	</body>
+	<style type="text/css">
+		#function form{
+			margin-top: 80px;
+		}
+	</style>
+	
+	<script type="text/javascript">
+		/*老师布置的作业信息id*/
+		var id = location.search.substr(location.search.indexOf("=")+1);
+		
+		$(document).ready(function(){
+			
+			/*获取学生信息*/
+			var url= "/student/getName.do";
+			$.ajax({
+				"url":url,
+				"type":"get",
+				"dataType":"json",
+				"success":function(json){
+					if(json.state==200){
+						var data = json.data;
+						$("#hello").attr("href","student_message.html?id="+data[0]);
+						$("#hello").html(data[1]);
+					}
+				}
+			});	
+		});
+		
+		/*上传作业*/
+		$("#upload-btn").click(function(){
+			var form = new FormData($("#upload-form")[0]);
+			form.append("thId",id);
+			var url = "/StudentHomework/uploadHomework.do";
+			$.ajax({
+				url:url,
+			    data:form,
+			    type:"post",
+			    dataType:"json",
+			    cache: false,
+		        async: true,
+			    processData:false,
+			    contentType: false,
+			    "success":function(json){
+			        if(json.state==200){
+			            alert("上传成功!");
+			            location.href = "stu.html";
+			        }else if(json.state==-9){
+			        	alert(json.message);
+			        }else if(json.state==-6){
+			        	alert(json.message);
+			        }
+			    }
+			});
+		});
+		
+	</script>
+	
+	
+</html>

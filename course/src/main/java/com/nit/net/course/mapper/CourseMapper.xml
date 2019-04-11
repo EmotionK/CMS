@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nit.net.course.mapper.CourseMapper">
+	<resultMap type="com.nit.net.course.VO.CourseTeacherVO" id="CourseTeacherMap">
+		<id column="tid" property="id" />
+		<result column="username" property="username" />
+		<result column="password" property="password" />
+		<result column="tname" property="name" />
+		<result column="gender" property="gender" />
+		<result column="age" property="age" />
+		<result column="college" property="college" />
+		<result column="phone" property="phone" />
+		<collection property="courses" ofType="com.nit.net.course.entity.Course">
+			<id column="cid" property="id" />
+			<result column="cname" property="name" />
+			<result column="time" property="time" />
+			<result column="location" property="location" />
+		</collection>
+	</resultMap>
+	
+	<!-- 查询所有课程与老师信息 -->
+	<!-- List<CourseTeacherVO> findAll() -->
+	<select id="findAll" resultMap="CourseTeacherMap">
+		SELECT 
+			c.id as cid,
+			t.id as tid,
+			c.name as cname,
+			t.name as tname,
+			time,location 
+		FROM 
+			course as c 
+		INNER JOIN 
+			t_user as t 
+		ON 
+			c.t_id=t.id
+	</select>
+	
+	<!-- 根据教师名或课程名查询课程和老师信息 -->
+	<!-- List<CourseTeacherVO> findByTCName(String name) -->
+	<select id="findByTCName" resultMap="CourseTeacherMap">
+		SELECT 
+			c.id as cid,
+			t.id as tid,
+			c.name as cname,
+			t.name as tname,
+			time,location 
+		FROM 
+			course as c 
+		INNER JOIN 
+			t_user as t 
+		ON 
+			c.t_id=t.id
+		WHERE
+			c.name=#{name}
+		OR
+			t.name=#{name}
+	</select>
+	
+	<!-- 显示学生选择的课程 -->
+	<!-- List<CourseTeacherVO> showOptionCourse(Integer sId) -->
+	<select id="showOptionCourse" resultMap="CourseTeacherMap">
+		SELECT
+			c.id as cid,
+			t.id as tid,
+			c.name as cname,
+			t.name as tname,
+			time,location 
+		FROM
+			course as c 
+		INNER JOIN
+			t_user as t 
+		ON
+			c.t_id=t.id 
+		WHERE
+			c.id IN (select c_id from student_course where s_id=#{sId});
+	</select>
+	
+	<!-- 根据课程名或教师名查询学生所选课程 -->
+	<!-- List<CourseTeacherVO> findByStuTnameCname(String name,Integer sId) -->
+	<select id="findByStuTnameCname" resultMap="CourseTeacherMap">
+		SELECT cid,tid,cname,tname,time,location 
+		FROM(SELECT
+			c.id as cid,
+			t.id as tid,
+			c.name as cname,
+			t.name as tname,
+			time,location 
+		FROM
+			course as c 
+		INNER JOIN
+			t_user as t 
+		ON
+			c.t_id=t.id 
+		WHERE
+			c.id IN (select c_id from student_course where s_id=#{sId})) c1
+		WHERE cname=#{name} or tname=#{name};
+	</select>
+	
+</mapper>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>成绩管理</title>
+		<link rel="stylesheet" href="../css/administrator.css" />
+		<script type="text/javascript" src="../js/jquery-3.0.0.js" ></script>
+	</head>
+	<body>
+		<div id="welcome">欢迎您：<a id="hello"></a></div>
+		<div id="navigation">
+			<div id="teacher_manage">成绩管理</div>
+			<div id="teacher_manage"><a href="teacher.html">课程管理</a></div>
+		</div>
+		<div id="function">
+			<form id="query">
+				<input id="select-btn" type="button" value="查询" />
+				<input id="text" type="text" placeholder="请输入班级或学生名" />
+			</form>
+			<table border="1" id="table">
+				<thead id="thead">
+					<tr>
+						<td>姓名</td>
+						<td>班级</td>
+						<td>作业成绩1</td>
+						<td>作业成绩2</td>
+					</tr>
+				</thead>
+				<tbody id="table-list">
+					<tr>
+						<td>苟李茜</td>
+						<td>计算机152</td>
+						<td>99</td>
+						<td>99</td>
+					</tr>
+				</tbody>
+			</table>
+			<div id="paging">
+				<a href="#">上一页</a>
+				<a href="#">下一页</a>
+			</div>
+		</div>
+	</body>
+	
+	<script type="text/javascript">
+		
+		var cId = location.search.substr(location.search.indexOf("=")+1);
+		
+		$(document).ready(function(){
+			/*查看教师信息*/
+			var url= "/teacher/getName.do";
+			$.ajax({
+				"url":url,
+				"type":"get",
+				"dataType":"json",
+				"success":function(json){					
+					if(json.state==200){
+						var data = json.data;
+						$("#hello").attr("href","teacher_message.html?id="+data[0]);
+						$("#hello").html(data[1]);
+					}
+				}
+			});
+			
+			showAllStudentScore();
+		});
+		
+		/*展示成绩*/
+		function showAllStudentScore(){
+			var url = "/student/findScoreStudentByCid.do";
+			var data = "cId="+cId;
+			$.ajax({
+			    "url":url,
+			    "data":data,
+			    "type":"get",
+			    "dataType":"json",
+			    "success":function(json){
+			        if(json.state==200){
+			            var data = json.data;
+			            
+			            $("#thead").empty();
+			            var a = '';
+			            for(var q=0;q<data[0].studentScores.length;q++){
+			            	a += '<td>作业成绩</td>';
+			            }
+			            var thead = '<tr>'
+								+'<td>姓名</td>'
+								+'<td>班级</td>'
+								+a
+								+'</tr>';
+						$("#thead").html(thead);
+						
+						$("#table-list").empty();
+						var b = '';
+						for(var j=0;j<data.length;j++){
+							for(var z=0;z<data[j].studentScores.length;z++){
+								b += '<td>#{score}</td>';
+								b = b.replace("#{score}",data[j].studentScores[z].score);
+							}
+							var html = '<tr>'
+								+'<td>#{name}</td>'
+								+'<td>#{squad}</td>'
+								+b
+								+'</tr>';
+							html = html.replace("#{name}",data[j].name);
+							html = html.replace("#{squad}",data[j].squad);
+							$("#table-list").append(html);
+						}
+			        }
+			    }
+			});
+		}
+		
+		
+		$("#select-btn").click(function(){
+			var url = "/student/findScoreBySNameCName.do";
+			var data = "name=" + $("#text").val();
+			$.ajax({
+			    "url":url,
+			    "data":data,
+			    "type":"get",
+			    "dataType":"json",
+			    "success":function(json){
+			        if(json.state==200){
+			            var data = json.data;
+			            
+			            $("#thead").empty();
+			            var a = '';
+			            for(var q=0;q<data[0].studentScores.length;q++){
+			            	a += '<td>作业成绩</td>';
+			            }
+			            var thead = '<tr>'
+								+'<td>姓名</td>'
+								+'<td>班级</td>'
+								+a
+								+'</tr>';
+						$("#thead").html(thead);
+						
+						$("#table-list").empty();
+						var b = '';
+						for(var j=0;j<data.length;j++){
+							for(var z=0;z<data[j].studentScores.length;z++){
+								b += '<td>#{score}</td>';
+								b = b.replace("#{score}",data[j].studentScores[z].score);
+							}
+							var html = '<tr>'
+								+'<td>#{name}</td>'
+								+'<td>#{squad}</td>'
+								+b
+								+'</tr>';
+							html = html.replace("#{name}",data[j].name);
+							html = html.replace("#{squad}",data[j].squad);
+							$("#table-list").append(html);
+						}
+			        }else if(json.state==-4){
+			        	alert(json.message);
+			        }
+			    }
+			});
+		});
+		
+	</script>
+	
+</html>

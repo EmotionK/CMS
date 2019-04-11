@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>作业查看</title>
+		<link rel="stylesheet" href="../css/administrator.css" />
+		<script type="text/javascript" src="../js/jquery-1.4.2.js" ></script>
+	</head>
+	<body>
+		<div id="welcome">欢迎您：<a id="hello"></a></div>
+		<div id="navigation">
+			<div id="teacher_manage"><a href="#">作业管理</a></div>
+		</div>
+		<div id="function">
+			<form id="query">
+			</form>
+			<table border="1" id="table">
+				<tr>
+					<td>学生学号</td>
+					<td>学生姓名</td>
+					<td>备注</td>
+				</tr>
+				<tbody id="table-list">
+					<tr>
+						<td>3150123068</td>
+						<td>苟李茜</td>
+						<td>
+							<a href="homework_score.html">查看作业</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<div id="paging">
+				<a href="#">上一页</a>
+				<a href="#">下一页</a>
+			</div>
+		</div>
+	</body>
+	
+	
+	<script type="text/javascript">
+	
+		
+		var url = location.search.split("&");
+		var id = url[0].substr(url[0].indexOf("=")+1);
+		var name = url[1].substr(url[1].indexOf("=")+1);
+		var knowledge = url[2].substr(url[2].indexOf("=")+1);
+		
+		$(document).ready(function(){
+			
+			/*获取老师的姓名*/
+			var url= "/teacher/getName.do";
+			$.ajax({
+				"url":url,
+				"type":"get",
+				"dataType":"json",
+				"success":function(json){					
+					if(json.state==200){
+						var data = json.data;
+						$("#hello").attr("href","teacher_message.html?id="+data[0]);
+						$("#hello").html(data[1]);
+					}
+				}
+			});
+			
+			showAllStudent();	
+		});
+		
+		function showAllStudent(){
+			var url = "/tacherHomework/findStudentByTeacherHomeworkId.do";
+			var data = "thId=" + id;
+			$.ajax({
+			    "url":url,
+			    "data":data,
+			    "type":"get",
+			    "dataType":"json",
+			    "success":function(json){
+			        if(json.state==200){
+			            var data = json.data;
+			            $("#table-list").empty();
+			            for(var i=0;i<data.length;i++){
+			            	var html = '<tr>'
+									+'<td>#{username}</td>'
+									+'<td>#{name}</td>'
+									+'<td>'
+									+'	<a href="homework_score.html?id=#{id}&name='+name+'&knowledge='+knowledge+'">查看作业</a>'
+									+'</td>'
+									+'</tr>';
+							html = html.replace("#{id}",data[i].id);
+							html = html.replace("#{username}",data[i].username);
+							html = html.replace("#{name}",data[i].name);
+							$("#table-list").append(html);
+			            }
+			        }
+			    }
+			});
+		}
+		
+		
+		
+		
+		
+	</script>
+	
+</html>

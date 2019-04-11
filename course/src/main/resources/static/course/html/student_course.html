@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>学生管理</title>
+		<link rel="stylesheet" href="../css/administrator.css" />
+		<script type="text/javascript" src="../js/jquery-1.4.2.js" ></script>
+	</head>
+	<body>
+		<div id="welcome">欢迎您：<a href="teacher_message.html">杨劲秋老师</a></div>
+		<div id="navigation">
+			<div id="teacher_manage"><a href="teacher.html">课程管理</a></div>
+			<div id="teacher_manage"><a href="#">学生管理</a></div>
+			<div id="teacher_manage"><a href="homework.html">作业管理</a></div>
+			<div id="teacher_manage"><a href="score.html">成绩管理</a></div>
+		</div>
+		<div id="function">
+			<div id="register"><a href="student_reg.html">注册学生</a></div>
+			<form id="query">
+				<input type="button" value="查询" />
+				<input type="text" placeholder="请输入学号或姓名或班级" />
+			</form>
+			<table border="1" id="table">
+				<tr>
+					<td>学号</td>
+					<td>姓名</td>
+					<td>性别</td>
+					<td>学院</td>
+					<td>班级</td>
+					<td>备注</td>
+				</tr>
+				<tr>
+					<td>3150123068</td>
+					<td>苟李茜</td>
+					<td>男</td>
+					<td>计算机与数据学院</td>
+					<td>计算机152</td>
+					<td>
+						<a href="student_alter.html">修改</a>
+						<a href="#">删除</a>
+					</td>
+				</tr>
+			</table>
+			<div id="paging">
+				<a href="#">上一页</a>
+				<a href="#">下一页</a>
+			</div>
+		</div>
+	</body>
+</html>

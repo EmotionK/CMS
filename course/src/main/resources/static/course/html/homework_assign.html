@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" >
+		<title>作业布置</title>
+		<link rel="stylesheet" href="../css/administrator.css" />
+		<link rel="stylesheet" href="../css/teacher_reg.css" />
+		<script type="text/javascript" src="../js/jquery.js" ></script>	
+	</head>
+	<body>
+		<div id="welcome">欢迎您：<a id="hello"></a></div>
+		<div id="navigation">
+			<div id="teacher_manage">作业布置</div>
+		</div>
+		<div id="function">
+				<form enctype="multipart/form-data" id="upload-form">
+					<span>课程名：</span><input id="name" type="text" disabled="disabled" /><br />
+					<span>知识点：</span><input name="knowledge" type="text" placeholder="请输入作业知识点" /><br />
+					<span>布置作业：</span><input name="uploadFile" type="file" value="选择文件" />
+					<input id="upload-btn" type="button" value="上传作业" />
+				</form>
+		</div>
+	</body>
+	
+	<script type="text/javascript">
+		/*课程id*/
+		var id = location.search.substr(location.search.indexOf("=")+1);
+		
+		$(document).ready(function(){
+			
+			/*获取老师的姓名*/
+			var url= "/teacher/getName.do";
+			$.ajax({
+				"url":url,
+				"type":"get",
+				"dataType":"json",
+				"success":function(json){					
+					if(json.state==200){
+						var data = json.data;
+						$("#hello").attr("href","teacher_message.html?id="+data[0]);
+						$("#hello").html(data[1]);
+					}
+				}
+			});
+			
+			/*根据课程id查询课程名*/
+			var url = "/course/findById.do";
+			var data = "id="+id;
+			$.ajax({
+				"url":url,
+			    "data":data,
+			    "type":"get",
+			    "dataType":"json",
+			    "success":function(json){
+			        if(json.state==200){
+			            $("#name").val(json.data.name);
+			        }else if(json.state==-6){
+			        	alert(json.message);
+			        }
+			    }
+			});
+			
+		});
+		
+		/*上传作业*/
+		$("#upload-btn").click(function(){
+			var form = new FormData($("#upload-form")[0]);
+			form.append("cId",id);
+			var url = "/tacherHomework/assignHomework.do";
+			console.log(form.get("knowledge"));
+			console.log(form.get("uploadFile"));
+			console.log(form.get("cId"));
+			$.ajax({
+				url:url,
+			    data:form,
+			    type:"post",
+			    dataType:"json",
+			    cache: false,
+		        async: true,
+			    processData:false,
+			    contentType: false,
+			    "success":function(json){
+			        if(json.state==200){
+			            alert("上传成功!");
+			            location.href = "teacher.html";
+			        }else if(json.state==-9){
+			        	alert(json.message);
+			        }else if(json.state==-6){
+			        	alert(json.message);
+			        }
+			    }
+			});
+		});
+		
+	</script>
+	
+	
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>管理员</title>
+		<link rel="stylesheet" href="../css/administrator.css" />
+		<script type="text/javascript" src="../js/jquery-1.4.2.js" ></script>
+	</head>
+	<body>
+		<div id="welcome">欢迎您：管理员大人</div>
+		<div id="navigation">
+			<div id="teacher_manage"><a>教师管理</a></div>
+			<div id="teacher_manage"><a href="student.html">学生管理</a></div>
+		</div>
+		<div id="function">
+			<div id="register"><a href="teacher_reg.html">注册教师</a></div>
+			<form id="query">
+				<input id="reg-btn" type="button" value="查询" />
+				<input name="name" type="text" placeholder="请输入教师姓名" />
+			</form>
+			<form>
+				<table border="1" id="table">
+					<tr>
+						<td>账号</td>
+						<td>姓名</td>
+						<td>性别</td>
+						<td>年龄</td>
+						<td>所属学院</td>
+						<td>联系方式</td>
+						<td>选项</td>
+					</tr>
+					<tbody id="table-list">
+						<tr>
+							<td>3150123068</td>
+							<td>杨劲秋</td>
+							<td>男</td>
+							<td>22</td>
+							<td>计算机与数据学院</td>
+							<td>17855808614</td>
+							<td>
+								<a href="teacher_message.html">修改</a>
+								<a href="#">删除</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</form>
+			<div id="paging">
+				<a href="#">上一页</a>
+				<a href="#">下一页</a>
+			</div>
+		</div>
+	</body>
+	
+	<script type="text/javascript">
+		
+		function showAllTeacher(){
+			var url = "/teacher/selectAll.do";
+			$.ajax({
+				"url":url,
+				"type":"get",
+				"dataType":"json",
+				"success":function(json){
+					var list = json.data;
+					//将原有数据清空
+					$("#table-list").empty();
+					for (var i = 0; i < list.length; i++) {
+						var html = '<tr>'
+							+'<td>#{username}</td>'
+							+'<td>#{name}</td>'
+							+'<td>#{gender}</td>'
+							+'<td>#{age}</td>'
+							+'<td>#{college}</td>'
+							+'<td>#{phone}</td>'
+							+'<td>'
+							+'	<a href="teacher_message_alter.html?id=#{id}" >修改</a>'
+							+'	<a href="javascript:deleteById(#{id})" onclick="return confirm(\'删除操作将不可恢复！您确定删除吗？\')">删除</a>'
+							+'</td>'
+							+'</tr>';
+						html = html.replace(/#{id}/g,list[i].id);
+						html = html.replace("#{username}",list[i].username);
+						html = html.replace("#{name}",list[i].name);
+						html = html.replace("#{gender}",list[i].gender);
+						html = html.replace("#{age}",list[i].age);
+						html = html.replace("#{college}",list[i].college);
+						html = html.replace("#{phone}",list[i].phone);
+						$("#table-list").append(html);
+					}
+				}
+			});
+		}
+		
+		$(document).ready(function(){	
+			showAllTeacher();
+		});
+		
+		function deleteById(id){
+			var url = "/teacher/delete.do";
+			var data = "id=" + id;
+			$.ajax({
+				"url":url,
+				"data":data,
+				"type":"get",
+				"dataType":"json",
+				"success":function(json){
+					if(json.state==200){
+						alert("删除成功!");
+						showAllTeacher();
+					}else if(json.state==-6){
+						alert(json.message);
+					}
+				}
+			});
+		}
+		
+		
+		$("#reg-btn").click(function(){
+			var url = "/teacher/findByName.do";
+			var data = $("#query").serialize();
+			$.ajax({
+				"url":url,
+				"data":data,
+				"type":"get",
+				"dataType":"json",
+				"success":function(json){
+					if(json.state==200){
+						var data = json.data;
+						$("#table-list").empty();
+						var html = '<tr>'
+							+'<td>#{username}</td>'
+							+'<td>#{name}</td>'
+							+'<td>#{gender}</td>'
+							+'<td>#{age}</td>'
+							+'<td>#{college}</td>'
+							+'<td>#{phone}</td>'
+							+'<td>'
+							+'	<a href="teacher_message_alter.html?id=#{id}" >修改</a>'
+							+'	<a href="javascript:deleteById(#{id})" onclick="return confirm(\'删除操作将不可恢复！您确定删除吗？\')">删除</a>'
+							+'</td>'
+							+'</tr>';
+						html = html.replace(/#{id}/g,data.id);
+						html = html.replace("#{username}",data.username);
+						html = html.replace("#{name}",data.name);
+						html = html.replace("#{gender}",data.gender);
+						html = html.replace("#{age}",data.age);
+						html = html.replace("#{college}",data.college);
+						html = html.replace("#{phone}",data.phone);
+						$("#table-list").append(html);
+					}else if(json.state==-4){
+						alert(json.message);
+					}
+				}
+			});
+		});
+		
+		
+	</script>
+	
+</html>

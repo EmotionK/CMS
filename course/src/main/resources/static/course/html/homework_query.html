@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>作业查看</title>
+		<link rel="stylesheet" href="../css/administrator.css" />
+		<script type="text/javascript" src="../js/jquery-1.4.2.js" ></script>
+	</head>
+	<body>
+		<div id="welcome">欢迎您：<a id="hello"></a></div>
+		<div id="navigation">
+			<div id="teacher_manage"><a href="#">作业管理</a></div>
+		</div>
+		<div id="function">
+			<form id="query">
+				<input id="select-btn" type="button" value="查询" />
+				<input name="knowledge" type="text" placeholder="请输入知识点" />
+			</form>
+			<table border="1" id="table">
+				<tr>
+					<td>课程名</td>
+					<td>知识点</td>
+					<td>布置时间</td>
+					<td>备注</td>
+				</tr>
+				<tbody id="table-list">
+					<tr>
+						<td>数据结构</td>
+						<td>二叉树</td>
+						<td>2018-08-23</td>
+						<td>
+							<a href="student_homework_query.html">查看作业</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<div id="paging">
+				<a href="#">上一页</a>
+				<a href="#">下一页</a>
+			</div>
+		</div>
+	</body>
+	
+	
+	<script type="text/javascript">
+	
+		/*课程id*/
+		var id = location.search.substr(location.search.indexOf("=")+1,location.search.indexOf("&")-4);
+		/*课程名*/
+		var name = decodeURI(location.search.substr(location.search.lastIndexOf("=")+1));
+		
+		$(document).ready(function(){
+			
+			/*获取老师的姓名*/
+			var url= "/teacher/getName.do";
+			$.ajax({
+				"url":url,
+				"type":"get",
+				"dataType":"json",
+				"success":function(json){					
+					if(json.state==200){
+						var data = json.data;
+						$("#hello").attr("href","teacher_message.html?id="+data[0]);
+						$("#hello").html(data[1]);
+					}
+				}
+			});
+			
+			showHomework();	
+		});
+		
+		/*根据课程id查询作业信息*/
+		function showHomework(){
+			var url = "/tacherHomework/findHomeworkByCid.do?cId="+id;
+			$.ajax({
+			    "url":url,
+			    "type":"get",
+			    "dataType":"json",
+			    "success":function(json){
+			        if(json.state==200){
+			        	var data = json.data;
+						$("#table-list").empty();
+			            for(var i=0;i<data.length;i++){	
+			            	var html = '<tr>'
+									+'<td>'+name+'</td>'
+									+'<td>#{knowledge}</td>'
+									+'<td>#{uploadDate}</td>'
+									+'<td>'
+									+'	<a href="student_homework_query.html?id=#{id}&name='+name+'&knowledge=#{knowledge}">查看作业</a>'
+									+'</td>';
+							html = html.replace("#{id}",data[i].id);
+							html = html.replace(/#{knowledge}/g,data[i].knowledge);
+							html = html.replace("#{uploadDate}",data[i].uploadDate);
+							$("#table-list").append(html);
+			            }
+			        }
+			    }
+			});
+		}
+		
+		/* 根据知识点查询布置作业信息 */
+		$("#select-btn").click(function(){
+			var url = "/tacherHomework/findHomeworkByKnowledge.do";
+			var data = $("#query").serialize();
+			$.ajax({
+			    "url":url,
+			    "data":data,
+			    "type":"get",
+			    "dataType":"json",
+			    "success":function(json){
+			        if(json.state==200){
+			            var data = json.data;
+						$("#table-list").empty();
+			            for(var i=0;i<data.length;i++){	
+			            	var html = '<tr>'
+									+'<td>'+name+'</td>'
+									+'<td>#{knowledge}</td>'
+									+'<td>#{uploadDate}</td>'
+									+'<td>'
+									+'	<a href="student_homework_query.html?id=#{id}">查看作业</a>'
+									+'</td>';
+							html = html.replace("#{id}",data[i].id);
+							html = html.replace("#{knowledge}",data[i].knowledge);
+							html = html.replace("#{uploadDate}",data[i].uploadDate);
+							$("#table-list").append(html);
+			            }
+			        }else if(json.state==-10){
+			        	alert(json.message);
+			        }
+			    }
+			});
+		});
+		
+		
+		
+	</script>
+	
+</html>

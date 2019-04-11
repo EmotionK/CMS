@@ -1,0 +1,60 @@
+#function span{
+	font-family: "楷体";
+	font-size: 30px;
+	cursor: pointer;
+    display: inline-block;
+    padding: 9px 6px;
+    text-align: right;
+    width: 250px;
+    vertical-align: top;
+    margin-left: 170px;
+}
+#function input[type="text"]{
+	width: 250px;
+	height: 20px;
+	margin-top: 15px;
+}
+#function input[type="password"]{
+	width: 250px;
+	height: 20px;
+	margin-top: 15px;
+}
+#function input[type="radio"]{
+	
+}
+#function input[type="button"]{
+	width: 250px;
+	height: 40px;
+	font-family: "楷体";
+	font-size: 20px;
+	border-radius: 5px;
+	margin:20px 435px;
+}
+
+#gender{
+	font-family: "楷体";
+	font-size: 30px;
+	margin-left: 490px;
+}
+
+#password_error{
+	position: absolute;
+	color: red;
+	font-family: "楷体";
+	font-size: 17px;
+	margin: -27px 0 0 690px;
+}
+
+#function select{
+	width: 250px;
+	height: 25px;
+}
+
+#username_error{
+	font-family: "楷体";
+	font-size: 20px;
+	color: red;
+	position: relative;
+	float: right;
+	margin: 23px 80px 0 0;
+}

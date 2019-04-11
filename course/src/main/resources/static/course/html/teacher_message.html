@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>教师信息</title>
+		<link rel="stylesheet" href="../css/administrator.css" />
+		<link rel="stylesheet" href="../css/teacher_reg.css" />
+		<script type="text/javascript" src="../js/jquery-1.4.2.js" ></script>
+	</head>
+	<body>
+		<div id="welcome">欢迎您：<a href="#" id="hello"></a></div>
+		<div id="navigation">
+			<div id="teacher_manage">教师信息</div>
+		</div>
+		<div id="function">
+			<form id="update-form">
+				<span>账号：</span><input id="username" type="text" disabled="disabled" /><div id="username_error"></div><br />
+				<span>姓名：</span><input id="name" name="name" type="text" /><br />
+				<div id="gender">
+					<input type="radio" id="1" name="gender" value="男" /><label for="1">男</label>
+					<input type="radio" id="2" name="gender" value="女" /><label for="2">女</label><br />
+				</div>
+				<span>年龄：</span><input name="age" id="age" type="text" /><br />
+				<span>所属学院：</span><select id="select" name="college">
+					<option>计算机与数据学院</option>
+					<option>商学院</option>
+					<option>法律与政治学院</option>
+					<option>外国语学院</option>
+					<option>生物与化学工程学院</option>
+					<option>传媒与设计学院</option>
+					<option>信息科学与工程学院</option>
+					<option>土木建筑工程学院</option>
+					<option>机电与能源工程学院</option>
+					<option></option>
+				</select>
+				<span>联系方式：</span><input id="phone" name="phone" type="text" /><br />
+				<input id="update-btn" type="button" value="修改信息" />
+			</form>
+			<a id="alter-password">修改密码</a>
+		</div>
+		
+	</body>
+	<style type="text/css">
+		#welcome>a{
+			text-decoration: none;
+		}
+		#function>a{
+			font-family: "楷体";
+			font-size: 20px;
+			margin-left: 600px;
+		}
+	</style>
+	
+	<script type="text/javascript">
+		$("#new_password").blur(function(){
+			var old_password = $("#password").val();
+			var new_password = $("#new_password").val();
+			if(old_password!=new_password){
+				$("#password_error").html("两次密码不一致");
+			}else{
+				$("#password_error").html("");
+			}
+		});
+		$("#username").blur(function(){
+			var username = $("#username").val();
+			var reg = /^\d{6,12}$/;
+			if(!reg.test(username)){
+				$("#username_error").html("请输入6-12位数字");
+			}else{
+				$("#username_error").html("");
+			}
+		});
+		
+		var id = location.search.substr(location.search.indexOf("=")+1);
+
+		$(document).ready(function(){
+			
+			$("#alter-password").attr("href","teacher_alter_pwd.html?id="+id);
+			
+			var url= "/teacher/getName.do";
+			$.ajax({
+				"url":url,
+				"type":"get",
+				"dataType":"json",
+				"success":function(json){
+					if(json.state==200){
+						var data = json.data;
+						$("#hello").html(data[1]);
+					}
+				}
+			});
+			
+			showTeacher();
+		});
+		
+		function showTeacher(){
+			var url = "/teacher/findById.do";
+			var data = "id="+id;
+			$.ajax({
+				"url":url,
+				"data":data,
+				"type":"get",
+				"dataType":"json",
+				"success":function(json){
+					var data = json.data;
+					if(json.state==200){
+						$("#username").val(data.username);
+						$("#name").val(data.name);
+						$("input[name=gender][value="+data.gender+"]").attr("checked",true);
+						$("#age").val(data.age);
+						$("#select").val(data.college);
+						$("#phone").val(data.phone);
+					}else if(json.state==-6){
+						alert(json.message);
+					}
+				}
+			});
+		}
+		
+		$("#update-btn").click(function(){
+			var url = "/teacher/updata.do";
+			var data = $("#update-form").serialize() + "&id="+id;
+			$.ajax({
+				"url":url,
+				"data":data,
+				"type":"post",
+				"dataType":"json",
+				"success":function(json){
+					if(json.state==200){
+						alert("修改成功!");
+						location.href = "teacher.html";
+					}else if(json.state==-6){
+						alert(json.message);
+					}
+				}
+			});
+			
+		});
+		
+		
+	</script>
+	
+</html>

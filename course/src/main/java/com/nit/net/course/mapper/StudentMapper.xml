@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nit.net.course.mapper.StudentMapper">
+	<resultMap type="com.nit.net.course.VO.StudentScoreVO" id="StudentScoreMap">
+		<result column="username" property="username" />
+		<result column="password" property="password" />
+		<result column="name" property="name" />
+		<result column="gender" property="gender" />
+		<result column="college" property="college" />
+		<result column="squad" property="squad" />
+		<collection property="studentScores" ofType="com.nit.net.course.entity.StudentScore">
+			<result column="score" property="score" />
+			<result column="suh_id" property="suhId" />
+			<result column="s_id" property="sId" />
+			<result column="c_id" property="cId" />
+		</collection>
+	</resultMap>
+	
+	
+	<!-- 根据课程id查询学生成绩和学生信息 -->
+	<!-- List<StudentScoreVO> findScoreStudentByCid(Integer cId) -->
+	<select id="findScoreStudentByCid" resultMap="StudentScoreMap">
+		SELECT 
+			s.name as name,
+			ss.score as score,
+			s.squad as squad 
+		FROM 
+			s_user as s 
+		INNER JOIN 
+			student_score as ss 
+		ON 
+			s.id = ss.s_id 
+		WHERE
+			ss.c_id=#{cId}
+	</select>
+	
+	<!-- 根据班级或者学生名查询成绩 -->
+	<!-- List<StudentScoreVO> findScoreBySNameCName(String name) -->
+	<select id="findScoreBySNameCName" resultMap="StudentScoreMap">
+		SELECT 
+			s.name as name,
+			ss.score as score,
+			s.squad as squad 
+		FROM 
+			s_user as s 
+		INNER JOIN 
+			student_score as ss 
+		ON 
+			s.id = ss.s_id 
+		WHERE
+			s.name=#{name} 
+		OR 
+			s.squad=#{name}
+	</select>
+	
+	
+	
+</mapper>

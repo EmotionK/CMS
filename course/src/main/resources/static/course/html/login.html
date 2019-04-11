@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>登录课程管理系统</title>
+	</head>
+	<script type="text/javascript" src="../js/jquery-1.4.2.js" ></script>
+	<script type="text/javascript">
+			onload = function(){
+				var imgs = document.getElementsByTagName("img");
+				for(var i=0;i<imgs.length;i++){
+					var img = imgs[i];
+					img.style.left = (i*500-500)+"px";
+				}
+			}
+			
+			function movefn(){
+				var moveId = setInterval(function(){
+				var imgs = document.getElementsByTagName("img");
+				for(var i=0;i<imgs.length;i++){
+					var img = imgs[i];
+					var oldLeft = parseInt(img.style.left);
+					oldLeft -= 2;
+					if(oldLeft<=-500){
+						oldLeft = 500*3;
+						//让定时器停止
+						clearInterval(moveId);
+						
+					}
+					img.style.left = oldLeft+"px";
+				}
+			},10);
+		}
+			
+			var timeId = setInterval(movefn,3000);
+			
+			function stop(){
+				clearInterval(timeId);
+			}
+			function start(){
+				clearInterval(timeId);
+				timeId = setInterval(movefn,3000);
+			}
+			
+			onblur = function(){
+				stop();
+			}
+			onfocus = function(){
+				start();
+			}
+			
+			
+			
+		</script>
+	<style type="text/css">
+		body{	
+			background-color:#778899;
+			margin: auto;
+		}
+		#d1 img{
+			margin-top: 20px;
+			width: 80%;
+			height: 150px;
+		}
+		#d2{
+			width: 500px;
+			height: 400px;
+			position: relative;
+			overflow: hidden;
+			margin-top: 10px;
+			margin-left: 137px;
+			float: left;
+		}
+		#d2 img{
+			width: 500px;
+			height: 400px;
+			position: absolute;
+			
+		}
+		#d3{
+			width: 540px;
+			height: 400px;
+			float: left;
+			margin-top: 10px;
+			margin-left: 50px;
+			background-color: #A9A9A9;
+		}
+		#d3 p{
+			text-align: center;
+			font-size: 30px;
+			font-family: "楷体";
+			color: red;
+		}
+		#d3 input[type='text']{
+			width: 300px;
+			height: 30px;
+			margin: 0px 0 0 110px;
+		}
+		#d3 input[type='password']{
+			width: 300px;
+			height: 30px;
+			margin: 20px 0 0 110px;
+		}
+		#d3 a{
+			float: right;
+			margin-right: 120px;
+		}
+		#d3 input[type='button']{
+			width: 300px;
+			height: 40px;
+			border-radius: 5px;
+			background-color: #40E0D0;
+			font-size: 25px;
+			font-family: "楷体";
+			color: white;
+			margin: 20px 0 0 110px;
+		}
+		#s1{
+			font-family: "楷体";
+			font-size: 15px;
+			float: right;
+			margin: 10px 5px 0 0;
+			color: red;
+		}
+		#s2{
+			font-family: "楷体";
+			font-size: 15px;
+			float: right;
+			margin: 30px 60px 0 0;
+			color: red;
+		}
+		#radio{
+			margin-top: 5px;
+			margin-left: 180px;
+		}
+	</style>
+	
+	<body>
+		<div align="center" id="d1">
+			<img src="../img/log.jpg" />
+		</div>
+		<div id="d2" onmouseover="stop()" onmouseout="start()">
+			<img src="../img/C9476ABD6A7A074FCB8047538BA_1430AA89_1EE48.jpg" />
+			<img src="../img/194E433D5CC9AEAF2FEE40B2A23_AB7D09A5_2DEB0.jpg" />
+			<img src="../img/7A27EC4B70C1446397A05DDE018_C31068E7_6786D.jpg" />
+			<img src="../img/DE61B7AC920F6A61DDAEADDD9D2_321F79AC_5C625.jpg	" />
+		</div>
+		<div id="d3">
+			<p>登录课程管理系统</p>
+			<form id="form-btn">
+				<input type="text" name="username" placeholder="账号" id="i1" />
+				<span id="s1"></span>
+				<br />
+				<input type="password" name="password" placeholder="密码" />
+				<span id="s2"></span>
+				<br />
+				<div id="radio">
+					<input id="1" value="administrator" type="radio" name="option" checked="checked" /><label for="1">管理员</label>
+					<input id="2" value="teacher" type="radio" name="option" /><label for="2">教师</label>
+					<input id="3" value="student" type="radio" name="option" /><label for="3">学生</label>
+				</div>
+				<input id="login-btn" type="button" value="登录" />
+			</form>
+			<a href="administrator_reg.html">管理员注册</a>
+		</div>
+	</body>
+	
+	<script type="text/javascript">
+		$("#i1").blur(function(){
+			var str = $("#i1").val();
+			var reg = /^\d{6,12}$/;
+			if(!reg.test(str)){
+				$("#s1").html("请输入6-12位数字");
+			}else{
+				$("#s1").html("");
+			}
+		});
+		
+		
+		$("#login-btn").click(function(){
+			var url;
+			var address;
+			var message = $("input[type='radio']:checked").val();
+			if(message=="administrator"){
+				url = "/administrator/login.do";
+				address = "administrator.html";
+			}else if(message=="teacher"){
+				url = "/teacher/login.do";
+				address = "teacher.html";
+			}else if(message=="student"){
+				url = "/student/login.do";
+				address = "stu.html";
+			}
+			var data = $("#form-btn").serialize();
+			$.ajax({
+				"url":url,
+				"data":data,
+				"type":"post",
+				"dataType":"json",
+				"success":function(json){
+					if(json.state==200){
+						alert("登陆成功！");
+						location.href = address;
+					}else if(json.state==-4){
+						$("#s1").html(json.message);
+					}else if(json.state==-5){
+						$("#s2").html(json.message);
+					}
+				}
+			});
+		});
+		
+	</script>
+	
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>课堂管理</title>
+		<link rel="stylesheet" href="../css/administrator.css" />
+		<script type="text/javascript" src="../js/jquery-1.4.2.js" ></script>
+	</head>
+	<body>
+		<div id="welcome">欢迎您：<a href="teacher_message.html" id="hello"></a></div>
+		<div id="navigation">
+			<div id="teacher_manage"><a>选课管理</a></div>
+		</div>
+		<div id="function">
+			<div id="register"><a href="stu.html">查看选择课程</a></div>
+			<form id="query">
+				<input id="select-btn" type="button" value="查询" />
+				<input name="name" type="text" placeholder="请输入课程名或教师名" />
+			</form>
+			<table border="1" id="table">
+				<tr>
+					<td>课程名</td>
+					<td>教师</td>
+					<td>课程时间</td>
+					<td>课程地点</td>
+					<td>备注</td>
+				</tr>
+				<tbody id="table-list">
+					<tr>
+						<td>数据结构</td>
+						<td>杨劲秋</td>
+						<td>周三第一节课</td>
+						<td>NB212</td>
+						<td>
+							<a href="#">选择此课程</a>
+						</td>
+					</tr>
+				</tbody>				
+			</table>
+			<div id="paging">
+				<a href="#">上一页</a>
+				<a href="#">下一页</a>
+			</div>
+		</div>
+	</body>
+	
+	<script type="text/javascript">
+		
+		$(document).ready(function(){
+			
+			var url= "/student/getName.do";
+			$.ajax({
+				"url":url,
+				"type":"get",
+				"dataType":"json",
+				"success":function(json){
+					if(json.state==200){
+						var data = json.data;
+						$("#hello").attr("href","student_message.html?id="+data[0]);
+						$("#hello").html(data[1]);
+					}
+				}
+			});
+			
+			showCourse();
+		});
+		
+		/*展示所有课程信息*/
+		function showCourse(){
+			var url = "/course/findAll.do";
+			$.ajax({
+				"url":url,
+				"type":"get",
+				"dataType":"json",
+				"success":function(json){
+					if(json.state==200){
+						var data = json.data;
+						$("#table-list").empty();
+						for(var i=0;i<data.length;i++){
+							var courses = data[i].courses;
+							for(var j=0;j<courses.length;j++){
+								var html = '<tr>'
+											+'<td>#{cname}</td>'
+											+'<td>#{tname}</td>'
+											+'<td>#{time}</td>'
+											+'<td>#{location}</td>'
+											+'<td>'
+											+'	<a href="javascript:optionCourse(#{id})" onclick="return confirm(\'你确定选择此课程吗?\')">选择此课程</a>'
+											+'</td>'
+											+'</tr>';
+								html = html.replace(/#{id}/g,courses[j].id);
+								html = html.replace("#{cname}",courses[j].name);
+								html = html.replace("#{tname}",data[i].name);
+								html = html.replace("#{time}",courses[j].time);
+								html = html.replace("#{location}",courses[j].location);
+								$("#table-list").append(html);
+							}
+						}
+					}
+				}
+			});
+		}
+		
+		/*根据教师姓名或课程名查询教师和课程信息*/
+		$("#select-btn").click(function(){
+			var url = "/course/findByTCName.do";
+			var data = $("#query").serialize();
+			$.ajax({
+				"url":url,
+				"data":data,
+				"type":"get",
+				"dataType":"json",
+				"success":function(json){
+					if(json.state==200){
+						var data = json.data;
+						$("#table-list").empty();
+						for(var i=0;i<data.length;i++){
+							var courses = data[i].courses;
+							for(var j=0;j<courses.length;j++){
+								var html = '<tr>'
+											+'<td>#{cname}</td>'
+											+'<td>#{tname}</td>'
+											+'<td>#{time}</td>'
+											+'<td>#{location}</td>'
+											+'<td>'
+											+'	<a href="javascript:optionCourse(#{id})" onclick="return confirm(\'你确定选择此课程吗?\')">选择此课程</a>'
+											+'</td>'
+											+'</tr>';
+								html = html.replace(/#{id}/g,courses[j].id);
+								html = html.replace("#{cname}",courses[j].name);
+								html = html.replace("#{tname}",data[i].name);
+								html = html.replace("#{time}",courses[j].time);
+								html = html.replace("#{location}",courses[j].location);
+								$("#table-list").append(html);
+							}
+						}
+					}else if(json.state==-7){
+						alert(json.message);
+					}
+				}
+			});
+		});
+		
+		/*将学生和课程绑定*/
+		function optionCourse(id){
+			var url = "/courseStudent/optionCourse.do";
+			var data = "cId="+id;
+			$.ajax({
+				"url":url,
+				"data":data,
+				"type":"get",
+				"dataType":"json",
+				"success":function(json){
+					if(json.state==200){
+						alert("选择成功!");
+					}else if(json.state==-6){
+						alert(json.message);
+					}else if(json.state==-8){
+						alert(json.message);
+					}
+				}
+			});
+		}
+		
+		
+	</script>
+	
+</html>
