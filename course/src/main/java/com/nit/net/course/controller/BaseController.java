@@ -56,7 +56,7 @@ public abstract class BaseController {
 			return new ResponseResult<>(-11,e);
 		}else if (e instanceof FileFormatErrorException) {
 			// -12文件格式不正确
-			return new ResponseResult<>(-11,e);
+			return new ResponseResult<>(-12,e);
 		}
 
         return null;
